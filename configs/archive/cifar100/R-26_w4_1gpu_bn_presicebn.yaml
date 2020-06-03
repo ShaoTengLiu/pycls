@@ -2,10 +2,10 @@ MODEL:
   TYPE: resnet
   DEPTH: 26
   WIDTH: 4
-  NUM_CLASSES: 10
+  NUM_CLASSES: 100
   LOSS_FUN: softmax_entropy
 RESNET:
-  NORM_FUNC: AdaptBN
+  NORM_FUNC: BN
   TRANS_FUN: basic_transform
 BN:
   USE_PRECISE_STATS: True
@@ -13,7 +13,7 @@ BN:
 OPTIM:
   BASE_LR: 0.001
   METHOD: adam
-  LR_POLICY: cos  
+  LR_POLICY: cos
   MAX_EPOCH: 1
   MOMENTUM: 0.9
   NESTEROV: True
@@ -22,24 +22,24 @@ OPTIM:
 AUG:
   TYPE: test
 TRAIN:
-  DATASET: cifar10
+  DATASET: cifar100
   SPLIT: test
   CORRUPTION: gaussian_noise
   LEVEL: 5
   BATCH_SIZE: 512
   IM_SIZE: 32
   EVAL_PERIOD: 1
+  WEIGHTS: /home/dqwang/Work/CLS/R-26_w4_1gpu_original_noinit_bn_cifar100.pyth
   LOAD_STRICT: False
-  WEIGHTS: /home/dqwang/Work/CLS/R-26_w4_1gpu_original_noinit_bn_cifar10.pyth
-  FEEDBACK: MinEntropy
+  FEEDBACK: PreciseBN
 TEST:
-  DATASET: cifar10
+  DATASET: cifar100
   SPLIT: test
   CORRUPTION: gaussian_noise
   LEVEL: 5
   BATCH_SIZE: 200
   IM_SIZE: 32
-  WEIGHTS: /home/dqwang/Work/CLS/R-26_w4_1gpu_original_noinit_bn_cifar10.pyth
+  WEIGHTS: /home/dqwang/Work/CLS/R-26_w4_1gpu_original_noinit_bn_cifar100.pyth
 NUM_GPUS: 1
 DATA_LOADER:
   NUM_WORKERS: 4

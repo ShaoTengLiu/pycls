@@ -1,0 +1,45 @@
+MODEL:
+  TYPE: resnet
+  DEPTH: 26
+  WIDTH: 4
+  NUM_CLASSES: 100
+  LOSS_FUN: cross_entropy_pseudo
+  PSEUDO_LOSS_THRESHOLD: 0.9
+RESNET:
+  NORM_FUNC: AdaptBN
+  TRANS_FUN: basic_transform
+BN:
+  USE_PRECISE_STATS: True
+  NUM_SAMPLES_PRECISE: 1024
+OPTIM:
+  BASE_LR: 0.001
+  METHOD: adam
+  LR_POLICY: cos
+  MAX_EPOCH: 1
+  MOMENTUM: 0.9
+  NESTEROV: True
+  WEIGHT_DECAY: 0.0001
+  PARAMS: only_bn_with_affine
+AUG:
+  TYPE: test
+TRAIN:
+  DATASET: cifar100
+  SPLIT: test
+  CORRUPTION: gaussian_noise
+  LEVEL: 5
+  BATCH_SIZE: 512
+  IM_SIZE: 32
+  EVAL_PERIOD: 1
+  LOAD_STRICT: False
+  WEIGHTS: /home/dqwang/Work/CLS/R-26_w4_1gpu_original_noinit_bn_cifar100.pyth
+  FEEDBACK: PseudoLabel
+TEST:
+  DATASET: cifar100
+  SPLIT: test
+  CORRUPTION: gaussian_noise
+  LEVEL: 5
+  BATCH_SIZE: 200
+  IM_SIZE: 32
+NUM_GPUS: 1
+DATA_LOADER:
+  NUM_WORKERS: 4

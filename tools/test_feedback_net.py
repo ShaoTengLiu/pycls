@@ -9,7 +9,7 @@
 
 import pycls.core.config as config
 import pycls.core.distributed as dist
-import pycls.core.test_feedback as test_feedback
+import pycls.core.trainer as trainer
 from pycls.core.config import cfg
 
 def main():
@@ -18,7 +18,7 @@ def main():
     cfg.freeze()
 
     # Perform training
-    dist.multi_proc_run(num_proc=cfg.NUM_GPUS, fun=test_feedback.train_model)
+    dist.multi_proc_run(num_proc=cfg.NUM_GPUS, fun=trainer.test_feedback_model)
 
 if __name__ == "__main__":
     main()

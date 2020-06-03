@@ -11,30 +11,31 @@ import os
 
 import torch
 from pycls.core.config import cfg
-from pycls.datasets.cifar10 import Cifar10
+from pycls.datasets.cifar import Cifar10
+from pycls.datasets.cifar import Cifar100
 from pycls.datasets.imagenet import ImageNet
 from torch.utils.data.distributed import DistributedSampler
 from torch.utils.data.sampler import RandomSampler
 
 
 # Supported datasets
-_DATASETS = {"cifar10": Cifar10, "imagenet": ImageNet}
+_DATASETS = {"cifar10": Cifar10, "cifar100": Cifar100, "imagenet": ImageNet}
 
 # Default data directory (/path/pycls/pycls/datasets/data)
 _DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 # Relative data paths to default data directory
-_PATHS = {"cifar10": "cifar10", "imagenet": "imagenet"}
+_PATHS = {"cifar10": "cifar10", "cifar100": "cifar100", "imagenet": "imagenet"}
 
 
-def _construct_loader(dataset_name, split, batch_size, shuffle, drop_last):
+def _construct_loader(dataset_name, split, corruption_type, corruption_level, batch_size, shuffle, drop_last):
     """Constructs the data loader for the given dataset."""
     err_str = "Dataset '{}' not supported".format(dataset_name)
     assert dataset_name in _DATASETS and dataset_name in _PATHS, err_str
     # Retrieve the data path for the dataset
     data_path = os.path.join(_DATA_DIR, _PATHS[dataset_name])
     # Construct the dataset
-    dataset = _DATASETS[dataset_name](data_path, split)
+    dataset = _DATASETS[dataset_name](data_path, split, corruption_type, corruption_level)
     # Create a sampler for multi-process training
     sampler = DistributedSampler(dataset) if cfg.NUM_GPUS > 1 else None
     # Create a loader
@@ -55,6 +56,8 @@ def construct_train_loader():
     return _construct_loader(
         dataset_name=cfg.TRAIN.DATASET,
         split=cfg.TRAIN.SPLIT,
+        corruption_type=cfg.TRAIN.CORRUPTION,
+        corruption_level=cfg.TRAIN.LEVEL,
         batch_size=int(cfg.TRAIN.BATCH_SIZE / cfg.NUM_GPUS),
         shuffle=True,
         drop_last=True,
@@ -66,6 +69,8 @@ def construct_test_loader():
     return _construct_loader(
         dataset_name=cfg.TEST.DATASET,
         split=cfg.TEST.SPLIT,
+        corruption_type=cfg.TEST.CORRUPTION,
+        corruption_level=cfg.TEST.LEVEL,
         batch_size=int(cfg.TEST.BATCH_SIZE / cfg.NUM_GPUS),
         shuffle=False,
         drop_last=False,

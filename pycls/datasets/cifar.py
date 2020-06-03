@@ -17,6 +17,7 @@ import torch.utils.data
 from pycls.core.config import cfg
 
 import torchvision.transforms as ttransforms
+from PIL import Image, ImageFilter
 
 logger = logging.get_logger(__name__)
 

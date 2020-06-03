@@ -23,6 +23,7 @@ import pycls.datasets.loader as loader
 import torch
 from pycls.core.config import cfg
 
+from pycls.utils import update_and_compute_precise_bn_stats_on_the_whole
 
 logger = logging.get_logger(__name__)
 
@@ -167,15 +168,23 @@ def train_model():
     # Perform the training loop
     logger.info("Start epoch: {}".format(start_epoch + 1))
     for cur_epoch in range(start_epoch, cfg.OPTIM.MAX_EPOCH):
-        # Train for one epoch
-        train_epoch(train_loader, model, loss_fun, optimizer, train_meter, cur_epoch)
-        # Compute precise BN stats
-        if cfg.BN.USE_PRECISE_STATS:
-            net.compute_precise_bn_stats(model, train_loader)
-        # Save a checkpoint
-        if (cur_epoch + 1) % cfg.TRAIN.CHECKPOINT_PERIOD == 0:
-            checkpoint_file = checkpoint.save_checkpoint(model, optimizer, cur_epoch)
-            logger.info("Wrote checkpoint to: {}".format(checkpoint_file))
+        if cfg.TRAIN.FEEDBACK != 'OnlyTest':
+            if cfg.TRAIN.FEEDBACK == 'PreciseBN':
+                update_and_compute_precise_bn_stats_on_the_whole(model, train_loader)
+            else: #if (cfg.TRAIN.FEEDBACK == 'MinEntropy+PreciseBN') or (cfg.TRAIN.FEEDBACK == 'MinEntropy'):
+                # Train for one epoch
+                train_epoch(train_loader, model, loss_fun, optimizer, train_meter, cur_epoch)
+
+                #if cfg.TRAIN.FEEDBACK == 'MinEntropy+PreciseBN':
+                if '+PreciseBN' in cfg.TRAIN.FEEDBACK:
+                    update_and_compute_precise_bn_stats_on_the_whole(model, train_loader)
+                # Compute precise BN stats
+                elif cfg.BN.USE_PRECISE_STATS:
+                    net.compute_precise_bn_stats(model, train_loader)
+            # Save a checkpoint
+            if (cur_epoch + 1) % cfg.TRAIN.CHECKPOINT_PERIOD == 0:
+                checkpoint_file = checkpoint.save_checkpoint(model, optimizer, cur_epoch)
+                logger.info("Wrote checkpoint to: {}".format(checkpoint_file))
         # Evaluate the model
         next_epoch = cur_epoch + 1
         if next_epoch % cfg.TRAIN.EVAL_PERIOD == 0 or next_epoch == cfg.OPTIM.MAX_EPOCH:

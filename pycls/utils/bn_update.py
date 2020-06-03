@@ -1,6 +1,6 @@
 import itertools
 import torch
-def update_and_compute_precise_bn_stats_on_the_whole(model, loader):
+def precise_bn_update(model, loader):
     """Computes precise BN stats on training data."""
     model.train()
     for inputs, _labels in itertools.islice(loader, len(loader)):

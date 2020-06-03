@@ -1,41 +1,42 @@
-# pycls
+# FTTA
 
-**pycls** is an image classification codebase, written in [PyTorch](https://pytorch.org/). It was originally developed for the [On Network Design Spaces for Visual Recognition](https://arxiv.org/abs/1905.13214) project. **pycls** has since matured and been adopted by a number of [projects](#projects) at Facebook AI Research.
+**FTTA** is the official code for paper [Fully Test-time Adaptation by Entropy Minimization](https://arxiv.org/abs/1905.13214). **FTTA** is developed based on [pycls](https://github.com/facebookresearch/pycls).
 
-<div align="center">
+<!-- <div align="center">
   <img src="docs/regnetx_nets.png" width="550px" />
   <p align="center"><b>pycls</b> provides a large set of baseline models across a wide range of flop regimes.</p>
-</div>
+</div> -->
 
 ## Introduction
 
-The goal of **pycls** is to provide a simple and flexible codebase for image classification. It is designed to support rapid implementation and evaluation of research ideas. **pycls** also provides a large collection of baseline results ([Model Zoo](MODEL_ZOO.md)).
+**FTTA** is ......
 
-The codebase supports efficient single-machine multi-gpu training, powered by the PyTorch distributed package, and provides implementations of standard models including [ResNet](https://arxiv.org/abs/1512.03385), [ResNeXt](https://arxiv.org/abs/1611.05431), [EfficientNet](https://arxiv.org/abs/1905.11946), and [RegNet](https://arxiv.org/abs/2003.13678).
-
-## Using pycls
+## Using FTTA
 
 Please see [`INSTALL.md`](docs/INSTALL.md) for brief installation instructions. After installation, please see [`GETTING_STARTED.md`](docs/GETTING_STARTED.md) for basic instructions and example commands on training and evaluation with **pycls**.
 
-## Model Zoo
+Training on CIFAR with 1 GPU: 
 
-We provide a large set of baseline results and pretrained models available for download in the **pycls** [Model Zoo](MODEL_ZOO.md); including the simple, fast, and effective [RegNet](https://arxiv.org/abs/2003.13678) models that we hope can serve as solid baselines across a wide range of flop regimes.
+```
+python tools/train_net.py \
+    --cfg configs/archive/cifar/resnet/R-56_nds_1gpu.yaml \
+    OUT_DIR /tmp
+```
 
-## Projects
+Use entropy feedback to adapt on CIFAR with 1 GPU: 
 
-A number of projects at FAIR have been built on top of **pycls**:
+```
+python tools/test_feedback_net.py \
+    --cfg configs/archive/cifar10/R-26_w4_1gpu_adaptbn_entropy_precisebn.yaml
+```
 
-- [On Network Design Spaces for Visual Recognition](https://arxiv.org/abs/1905.13214)
-- [Exploring Randomly Wired Neural Networks for Image Recognition](https://arxiv.org/abs/1904.01569)
-- [Designing Network Design Spaces](https://arxiv.org/abs/2003.13678)
-- [Are Labels Necessary for Neural Architecture Search?](https://arxiv.org/abs/2003.12056)
-- [PySlowFast Video Understanding Codebase](https://github.com/facebookresearch/SlowFast)
+<!-- ## Model Zoo
 
-If you are using **pycls** in your research and would like us to include your project here, please let us know or send a PR.
+We provide a large set of baseline results and pretrained models available for download in the **pycls** [Model Zoo](MODEL_ZOO.md); including the simple, fast, and effective [RegNet](https://arxiv.org/abs/2003.13678) models that we hope can serve as solid baselines across a wide range of flop regimes. -->
 
-## Citing pycls
+## Citing FTTA
 
-If you find **pycls** helpful in your research or refer to the baseline results in the [Model Zoo](MODEL_ZOO.md), please consider citing:
+If you find **FTTA** helpful in your research or refer to the baseline results in the [Model Zoo](MODEL_ZOO.md), please consider citing:
 
 ```
 @InProceedings{Radosavovic2019,
@@ -53,9 +54,9 @@ If you find **pycls** helpful in your research or refer to the baseline results 
 }
 ```
 
-## License
+<!-- ## License
 
-**pycls** is released under the MIT license. Please see the [LICENSE](LICENSE) file for more information.
+**pycls** is released under the MIT license. Please see the [LICENSE](LICENSE) file for more information. -->
 
 ## Contributing
 

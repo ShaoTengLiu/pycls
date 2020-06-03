@@ -1,2 +1,2 @@
 from .norm import get_norm
-from .bn_update import update_and_compute_precise_bn_stats_on_the_whole
+from .bn_update import precise_bn_update

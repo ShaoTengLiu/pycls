@@ -23,7 +23,7 @@ import pycls.datasets.loader as loader
 import torch
 from pycls.core.config import cfg
 
-from pycls.utils import update_and_compute_precise_bn_stats_on_the_whole as precise_bn_update
+from pycls.utils import precise_bn_update
 
 logger = logging.get_logger(__name__)
 

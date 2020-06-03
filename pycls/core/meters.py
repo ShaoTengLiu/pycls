@@ -306,3 +306,6 @@ class TestMeter(object):
             top5=stats['top5_err'],
             mem=stats['mem'],
         ))
+    def get_return_results(self):
+        top1_err = self.num_top1_mis / self.num_samples
+        return round(top1_err, 2)

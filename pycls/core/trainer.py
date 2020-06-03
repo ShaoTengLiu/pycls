@@ -24,6 +24,7 @@ import torch
 from pycls.core.config import cfg
 
 from pycls.utils import precise_bn_update
+from rich.progress import track
 
 logger = logging.get_logger(__name__)
 
@@ -133,7 +134,8 @@ def test_epoch(test_loader, model, test_meter, cur_epoch):
         test_meter.iter_tic()
     # Log epoch stats
     test_meter.log_epoch_stats(cur_epoch)
-    test_meter.reset()
+    # test_meter.reset()
+    return test_meter.get_return_results()
 
 
 def train_model():
@@ -180,7 +182,7 @@ def train_model():
             test_epoch(test_loader, model, test_meter, cur_epoch)
 
 def test_feedback_model():
-    """Trains the model."""
+    """Use feed back to fine-tune some part of the model."""
     # Setup training/testing environment
     setup_env()
     # Construct the model, loss_fun, and optimizer
@@ -191,14 +193,6 @@ def test_feedback_model():
     start_epoch = 0
     checkpoint.load_checkpoint(cfg.TRAIN.WEIGHTS, model, strict=cfg.TRAIN.LOAD_STRICT)
     logger.info("Loaded initial weights from: {}".format(cfg.TRAIN.WEIGHTS))
-    # if cfg.TRAIN.AUTO_RESUME and checkpoint.has_checkpoint():
-    #     last_checkpoint = checkpoint.get_last_checkpoint()
-    #     checkpoint_epoch = checkpoint.load_checkpoint(last_checkpoint, model, optimizer)
-    #     logger.info("Loaded checkpoint from: {}".format(last_checkpoint))
-    #     start_epoch = checkpoint_epoch + 1
-    # elif cfg.TRAIN.WEIGHTS:
-    #     checkpoint.load_checkpoint(cfg.TRAIN.WEIGHTS, model)
-    #     logger.info("Loaded initial weights from: {}".format(cfg.TRAIN.WEIGHTS))
 
     # Create data loaders and meters
     train_loader = loader.construct_train_loader()
@@ -232,6 +226,65 @@ def test_feedback_model():
         next_epoch = cur_epoch + 1
         if next_epoch % cfg.TRAIN.EVAL_PERIOD == 0 or next_epoch == cfg.OPTIM.MAX_EPOCH:
             test_epoch(test_loader, model, test_meter, cur_epoch)
+
+def test_feedback_all_model(corruptions, levels):
+    """Use feed back to fine-tune some part of the model. (with all kind of corruptions)"""
+    all_results = []
+    for corruption_level in levels:
+        lvl_results = []
+        for corruption_type in corruptions:
+            cfg.TRAIN.CORRUPTION = corruption_type
+            cfg.TRAIN.LEVEL = corruption_level
+            cfg.TEST.CORRUPTION = corruption_type
+            cfg.TEST.LEVEL = corruption_level
+
+            # Setup training/testing environment
+            setup_env()
+            # Construct the model, loss_fun, and optimizer
+            model = setup_model()
+            loss_fun = builders.build_loss_fun().cuda()
+            optimizer = optim.construct_optimizer(model)
+            # Load checkpoint or initial weights
+            start_epoch = 0
+            checkpoint.load_checkpoint(cfg.TRAIN.WEIGHTS, model, strict=cfg.TRAIN.LOAD_STRICT)
+            logger.info("Loaded initial weights from: {}".format(cfg.TRAIN.WEIGHTS))
+            # Create data loaders and meters
+            train_loader = loader.construct_train_loader()
+            test_loader = loader.construct_test_loader()
+            train_meter = meters.TrainMeter(len(train_loader))
+            test_meter = meters.TestMeter(len(test_loader))
+            # Compute model and loader timings
+            if start_epoch == 0 and cfg.PREC_TIME.NUM_ITER > 0:
+                benchmark.compute_time_full(model, loss_fun, train_loader, test_loader)
+            # Perform the training loop
+            logger.info("Start epoch: {}".format(start_epoch + 1))
+            for cur_epoch in track( range(start_epoch, cfg.OPTIM.MAX_EPOCH), \
+                description="Test-time adaptation for {} {}".format(corruption, str(level)) ):
+                if cfg.TRAIN.FEEDBACK != 'OnlyTest':
+                    if cfg.TRAIN.FEEDBACK == 'PreciseBN':
+                        precise_bn_update(model, train_loader)
+                    else: #if (cfg.TRAIN.FEEDBACK == 'MinEntropy+PreciseBN') or (cfg.TRAIN.FEEDBACK == 'MinEntropy'):
+                        # Train for one epoch
+                        train_epoch(train_loader, model, loss_fun, optimizer, train_meter, cur_epoch)
+
+                        #if cfg.TRAIN.FEEDBACK == 'MinEntropy+PreciseBN':
+                        if '+PreciseBN' in cfg.TRAIN.FEEDBACK:
+                            precise_bn_update(model, train_loader)
+                        # Compute precise BN stats
+                        elif cfg.BN.USE_PRECISE_STATS:
+                            net.compute_precise_bn_stats(model, train_loader)
+                    # Save a checkpoint
+                    if (cur_epoch + 1) % cfg.TRAIN.CHECKPOINT_PERIOD == 0:
+                        checkpoint_file = checkpoint.save_checkpoint(model, optimizer, cur_epoch)
+                        logger.info("Wrote checkpoint to: {}".format(checkpoint_file))
+                # Evaluate the model
+                next_epoch = cur_epoch + 1
+                if next_epoch % cfg.TRAIN.EVAL_PERIOD == 0 or next_epoch == cfg.OPTIM.MAX_EPOCH:
+                    top1 = test_epoch(test_loader, model, test_meter, cur_epoch)
+            lvl_results.append(top1)
+        all_results.append(lvl_results)
+    return all_results
+
 
 def test_model():
     """Evaluates a trained model."""

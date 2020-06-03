@@ -14,6 +14,8 @@ import sys
 from pycls.core.io import cache_url
 from yacs.config import CfgNode as CfgNode
 
+from datetime import datetime
+
 
 # Global config object
 _C = CfgNode()
@@ -382,8 +384,8 @@ def assert_and_infer_cfg(cache_urls=True):
     assert _C.TEST.BATCH_SIZE % _C.NUM_GPUS == 0, err_str
     err_str = "Precise BN stats computation not verified for > 1 GPU"
     assert not _C.BN.USE_PRECISE_STATS or _C.NUM_GPUS == 1, err_str
-    err_str = "Log destination '{}' not supported"
-    assert _C.LOG_DEST in ["stdout", "file"], err_str.format(_C.LOG_DEST)
+    # err_str = "Log destination '{}' not supported"
+    # assert _C.LOG_DEST in ["stdout", "file"], err_str.format(_C.LOG_DEST)
     if cache_urls:
         cache_cfg_urls()
 
@@ -399,7 +401,7 @@ def dump_cfg():
     cfg_file = os.path.join(_C.OUT_DIR, _C.CFG_DEST)
     with open(cfg_file, "w") as f:
         _C.dump(stream=f)
-
+        
 
 def load_cfg(out_dir, cfg_dest="config.yaml"):
     """Loads config from specified output directory."""
@@ -418,5 +420,16 @@ def load_cfg_fom_args(description="Config file options."):
         parser.print_help()
         sys.exit(1)
     args = parser.parse_args()
+    
     _C.merge_from_file(args.cfg_file)
     _C.merge_from_list(args.opts)
+
+    # automatically name the out_dir
+    _C.OUT_DIR = args.cfg_file.replace('configs/', 'output/')[:-5]
+
+    datetime_now = datetime.now().strftime("%m%d_%H%M%S")
+    _C.LOG_DEST = 'log_'+datetime_now+'.txt'
+    _C.CFG_DEST = 'cfg_'+datetime_now+'.yaml'
+
+    # uncommit to use multi-gpu
+    # cfg.NUM_GPUS = torch.cuda.device_count()

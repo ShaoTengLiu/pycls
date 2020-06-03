@@ -7,3 +7,5 @@ parameterized
 setuptools
 simplejson
 yacs
+
+termcolor

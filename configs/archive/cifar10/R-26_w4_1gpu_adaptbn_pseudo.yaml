@@ -3,7 +3,8 @@ MODEL:
   DEPTH: 26
   WIDTH: 4
   NUM_CLASSES: 10
-  LOSS_FUN: softmax_entropy
+  LOSS_FUN: cross_entropy_pseudo
+  PSEUDO_LOSS_THRESHOLD: 0.9
 RESNET:
   NORM_FUNC: AdaptBN
   TRANS_FUN: basic_transform
@@ -31,7 +32,7 @@ TRAIN:
   EVAL_PERIOD: 1
   LOAD_STRICT: False
   WEIGHTS: /home/dqwang/Work/CLS/R-26_w4_1gpu_original_noinit_bn_cifar10.pyth
-  FEEDBACK: MinEntropy
+  FEEDBACK: PseudoLabel
 TEST:
   DATASET: cifar10
   SPLIT: test
@@ -39,7 +40,6 @@ TEST:
   LEVEL: 5
   BATCH_SIZE: 200
   IM_SIZE: 32
-  WEIGHTS: /home/dqwang/Work/CLS/R-26_w4_1gpu_original_noinit_bn_cifar10.pyth
 NUM_GPUS: 1
 DATA_LOADER:
   NUM_WORKERS: 4

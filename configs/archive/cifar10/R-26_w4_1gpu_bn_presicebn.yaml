@@ -5,7 +5,7 @@ MODEL:
   NUM_CLASSES: 10
   LOSS_FUN: softmax_entropy
 RESNET:
-  NORM_FUNC: AdaptBN
+  NORM_FUNC: BN
   TRANS_FUN: basic_transform
 BN:
   USE_PRECISE_STATS: True
@@ -29,9 +29,9 @@ TRAIN:
   BATCH_SIZE: 512
   IM_SIZE: 32
   EVAL_PERIOD: 1
-  LOAD_STRICT: False
   WEIGHTS: /home/dqwang/Work/CLS/R-26_w4_1gpu_original_noinit_bn_cifar10.pyth
-  FEEDBACK: MinEntropy
+  LOAD_STRICT: False
+  FEEDBACK: PreciseBN
 TEST:
   DATASET: cifar10
   SPLIT: test

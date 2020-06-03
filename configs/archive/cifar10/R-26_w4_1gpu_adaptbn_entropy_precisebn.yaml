@@ -8,7 +8,7 @@ RESNET:
   NORM_FUNC: AdaptBN
   TRANS_FUN: basic_transform
 BN:
-  USE_PRECISE_STATS: True
+  USE_PRECISE_STATS: False
   NUM_SAMPLES_PRECISE: 1024
 OPTIM:
   BASE_LR: 0.001
@@ -31,7 +31,7 @@ TRAIN:
   EVAL_PERIOD: 1
   LOAD_STRICT: False
   WEIGHTS: /home/dqwang/Work/CLS/R-26_w4_1gpu_original_noinit_bn_cifar10.pyth
-  FEEDBACK: MinEntropy
+  FEEDBACK: MinEntropy+PreciseBN
 TEST:
   DATASET: cifar10
   SPLIT: test

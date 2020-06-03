@@ -32,7 +32,7 @@ def main():
 
     config.load_cfg_fom_args("Train a classification model.")
     config.assert_and_infer_cfg()
-    cfg.freeze()
+    # cfg.freeze()
 
     args = parse_args()
     # Perform training

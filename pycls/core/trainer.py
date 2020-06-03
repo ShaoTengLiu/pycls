@@ -52,7 +52,7 @@ def setup_model():
     model = builders.build_model()
     logger.info("Model:\n{}".format(model))
     # Log model complexity
-    logger.info(logging.dump_log_data(net.complexity(model), "complexity"))
+    # logger.info(logging.dump_log_data(net.complexity(model), "complexity"))
     # Transfer the model to the current GPU device
     err_str = "Cannot use more GPU devices than available"
     assert cfg.NUM_GPUS <= torch.cuda.device_count(), err_str

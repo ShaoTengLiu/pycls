@@ -146,11 +146,27 @@ class TrainMeter(object):
         }
         return stats
 
+    # def log_iter_stats(self, cur_epoch, cur_iter):
+    #     if (cur_iter + 1) % cfg.LOG_PERIOD != 0:
+    #         return
+    #     stats = self.get_iter_stats(cur_epoch, cur_iter)
+    #     logger.info(logging.dump_log_data(stats, "train_iter"))
+
+    # change output style
     def log_iter_stats(self, cur_epoch, cur_iter):
         if (cur_iter + 1) % cfg.LOG_PERIOD != 0:
             return
         stats = self.get_iter_stats(cur_epoch, cur_iter)
-        logger.info(logging.dump_log_data(stats, "train_iter"))
+        logger.info("""eta:{eta}  [{epoch}][{iter}] loss:{loss:.3f} top1:{top1:.1f} top5:{top5:.1f} lr:{lr:.4f}""".format(
+            eta=stats['eta'],
+            epoch=stats['epoch'],
+            iter=stats['iter'],
+            loss=stats['loss'],
+            top1=stats['top1_err'],
+            top5=stats['top5_err'],
+            lr=stats['lr'],
+            mem=stats['mem'],
+        ))
 
     def get_epoch_stats(self, cur_epoch):
         cur_iter_total = (cur_epoch + 1) * self.epoch_iters
@@ -171,9 +187,21 @@ class TrainMeter(object):
         }
         return stats
 
+    # def log_epoch_stats(self, cur_epoch):
+    #     stats = self.get_epoch_stats(cur_epoch)
+    #     logger.info(logging.dump_log_data(stats, "train_epoch"))
+
+    # change output style
     def log_epoch_stats(self, cur_epoch):
         stats = self.get_epoch_stats(cur_epoch)
-        logger.info(logging.dump_log_data(stats, "train_epoch"))
+        logger.info("""train epoch:{epoch} loss:{loss:.3f} top1:{top1:.1f} top5:{top5:.1f} lr:{lr:.4f} mem:{mem}""".format(
+            epoch=stats['epoch'],
+            loss=stats['loss'],
+            top1=stats['top1_err'],
+            top5=stats['top5_err'],
+            lr=stats['lr'],
+            mem=stats['mem'],
+        ))
 
 
 class TestMeter(object):
@@ -230,11 +258,23 @@ class TestMeter(object):
         }
         return iter_stats
 
+    # def log_iter_stats(self, cur_epoch, cur_iter):
+    #     if (cur_iter + 1) % cfg.LOG_PERIOD != 0:
+    #         return
+    #     stats = self.get_iter_stats(cur_epoch, cur_iter)
+    #     logger.info(logging.dump_log_data(stats, "test_iter"))
+
+    # change output style
     def log_iter_stats(self, cur_epoch, cur_iter):
         if (cur_iter + 1) % cfg.LOG_PERIOD != 0:
             return
         stats = self.get_iter_stats(cur_epoch, cur_iter)
-        logger.info(logging.dump_log_data(stats, "test_iter"))
+        logger.info("""[{epoch}][{iter}] top1:{top1:.1f} top5:{top5:.1f}""".format(
+            epoch=stats['epoch'],
+            iter=stats['iter'],
+            top1=stats['top1_err'],
+            top5=stats['top5_err'],
+        ))
 
     def get_epoch_stats(self, cur_epoch):
         top1_err = self.num_top1_mis / self.num_samples
@@ -253,6 +293,16 @@ class TestMeter(object):
         }
         return stats
 
+    # def log_epoch_stats(self, cur_epoch):
+    #     stats = self.get_epoch_stats(cur_epoch)
+    #     logger.info(logging.dump_log_data(stats, "test_epoch"))
+
+    # change output style
     def log_epoch_stats(self, cur_epoch):
         stats = self.get_epoch_stats(cur_epoch)
-        logger.info(logging.dump_log_data(stats, "test_epoch"))
+        logger.info("""test epoch:{epoch} top1:{top1:.1f} top5:{top5:.1f} mem:{mem}""".format(
+            epoch=stats['epoch'],
+            top1=stats['top1_err'],
+            top5=stats['top5_err'],
+            mem=stats['mem'],
+        ))

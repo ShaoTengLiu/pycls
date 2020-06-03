@@ -36,6 +36,9 @@ _C.MODEL.TYPE = ""
 # Number of weight layers
 _C.MODEL.DEPTH = 0
 
+# Number of weight width
+_C.MODEL.WIDTH = 1
+
 # Number of classes
 _C.MODEL.NUM_CLASSES = 10
 
@@ -47,6 +50,9 @@ _C.MODEL.LOSS_FUN = "cross_entropy"
 # ResNet options
 # ------------------------------------------------------------------------------------ #
 _C.RESNET = CfgNode()
+
+# The normalization
+_C.RESNET.NORM_FUNC = 'BN'
 
 # Transformation function (see pycls/models/resnet.py for options)
 _C.RESNET.TRANS_FUN = "basic_transform"
@@ -201,6 +207,9 @@ _C.BN.CUSTOM_WEIGHT_DECAY = 0.0
 # ------------------------------------------------------------------------------------ #
 _C.OPTIM = CfgNode()
 
+# SGD or Adam
+_C.OPTIM.METHOD = 'sgd'
+
 # Base learning rate
 _C.OPTIM.BASE_LR = 0.1
 
@@ -237,6 +246,17 @@ _C.OPTIM.WARMUP_FACTOR = 0.1
 # Gradually warm up the OPTIM.BASE_LR over this number of epochs
 _C.OPTIM.WARMUP_EPOCHS = 0
 
+# Optimization parameters
+_C.OPTIM.PARAMS = 'default'
+
+# ---------------------------------------------------------------------------- #
+# Data augmentation options
+# ---------------------------------------------------------------------------- #
+_C.AUG = CfgNode()
+
+# Data Augmentation
+_C.AUG.IMG_FMT = 'RGB'
+_C.AUG.TYPE = 'default'
 
 # ------------------------------------------------------------------------------------ #
 # Training options
@@ -246,6 +266,10 @@ _C.TRAIN = CfgNode()
 # Dataset and split
 _C.TRAIN.DATASET = ""
 _C.TRAIN.SPLIT = "train"
+
+# Data Corruption (Noise)
+_C.TRAIN.CORRUPTION = "original"
+_C.TRAIN.LEVEL = 5
 
 # Total mini-batch size
 _C.TRAIN.BATCH_SIZE = 128
@@ -265,6 +289,9 @@ _C.TRAIN.AUTO_RESUME = True
 # Weights to start training from
 _C.TRAIN.WEIGHTS = ""
 
+# Feedback Strategy
+_C.TRAIN.FEEDBACK = "MinEntropy"
+
 
 # ------------------------------------------------------------------------------------ #
 # Testing options
@@ -274,6 +301,10 @@ _C.TEST = CfgNode()
 # Dataset and split
 _C.TEST.DATASET = ""
 _C.TEST.SPLIT = "val"
+
+# Data Corruption (Noise)
+_C.TEST.CORRUPTION = "original"
+_C.TEST.LEVEL = 5
 
 # Total mini-batch size
 _C.TEST.BATCH_SIZE = 200

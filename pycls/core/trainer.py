@@ -23,6 +23,7 @@ import pycls.datasets.loader as loader
 import torch
 from pycls.core.config import cfg
 
+from pycls.utils import update_and_compute_precise_bn_stats_on_the_whole as precise_bn_update
 
 logger = logging.get_logger(__name__)
 
@@ -212,14 +213,14 @@ def test_feedback_model():
     for cur_epoch in range(start_epoch, cfg.OPTIM.MAX_EPOCH):
         if cfg.TRAIN.FEEDBACK != 'OnlyTest':
             if cfg.TRAIN.FEEDBACK == 'PreciseBN':
-                update_and_compute_precise_bn_stats_on_the_whole(model, train_loader)
+                precise_bn_update(model, train_loader)
             else: #if (cfg.TRAIN.FEEDBACK == 'MinEntropy+PreciseBN') or (cfg.TRAIN.FEEDBACK == 'MinEntropy'):
                 # Train for one epoch
                 train_epoch(train_loader, model, loss_fun, optimizer, train_meter, cur_epoch)
 
                 #if cfg.TRAIN.FEEDBACK == 'MinEntropy+PreciseBN':
                 if '+PreciseBN' in cfg.TRAIN.FEEDBACK:
-                    update_and_compute_precise_bn_stats_on_the_whole(model, train_loader)
+                    precise_bn_update(model, train_loader)
                 # Compute precise BN stats
                 elif cfg.BN.USE_PRECISE_STATS:
                     net.compute_precise_bn_stats(model, train_loader)

@@ -33,24 +33,52 @@ def construct_optimizer(model):
     when the learning rate is changed there is no need to perform the
     momentum correction by scaling V (unlike in the Caffe2 case).
     """
-    if cfg.BN.USE_CUSTOM_WEIGHT_DECAY:
+    if cfg.OPTIM.PARAMS == 'default':
+        if cfg.BN.USE_CUSTOM_WEIGHT_DECAY:
+            # Apply different weight decay to Batchnorm and non-batchnorm parameters.
+            p_bn = [p for n, p in model.named_parameters() if "bn" in n]
+            p_non_bn = [p for n, p in model.named_parameters() if "bn" not in n]
+            optim_params = [
+                {"params": p_bn, "weight_decay": cfg.BN.CUSTOM_WEIGHT_DECAY},
+                {"params": p_non_bn, "weight_decay": cfg.OPTIM.WEIGHT_DECAY},
+            ]
+        else:
+            optim_params = model.parameters()
+    # only optimize the affine parameters after normalization
+    elif cfg.OPTIM.PARAMS == 'only_bn_with_affine':
+        bn_params = []
+
+        for name, p in model.named_parameters():
+            if "bn" in name:
+                bn_params.append(p)
+            else:
+                p.requires_grad = False
+
         # Apply different weight decay to Batchnorm and non-batchnorm parameters.
-        p_bn = [p for n, p in model.named_parameters() if "bn" in n]
-        p_non_bn = [p for n, p in model.named_parameters() if "bn" not in n]
+        bn_weight_decay = (
+            cfg.BN.CUSTOM_WEIGHT_DECAY
+            if cfg.BN.USE_CUSTOM_WEIGHT_DECAY
+            else cfg.OPTIM.WEIGHT_DECAY
+        )
         optim_params = [
-            {"params": p_bn, "weight_decay": cfg.BN.CUSTOM_WEIGHT_DECAY},
-            {"params": p_non_bn, "weight_decay": cfg.OPTIM.WEIGHT_DECAY},
+            {"params": bn_params, "weight_decay": bn_weight_decay},
         ]
-    else:
-        optim_params = model.parameters()
-    return torch.optim.SGD(
-        optim_params,
-        lr=cfg.OPTIM.BASE_LR,
-        momentum=cfg.OPTIM.MOMENTUM,
-        weight_decay=cfg.OPTIM.WEIGHT_DECAY,
-        dampening=cfg.OPTIM.DAMPENING,
-        nesterov=cfg.OPTIM.NESTEROV,
-    )
+
+    if cfg.OPTIM.METHOD == 'sgd':
+        return torch.optim.SGD(
+            optim_params,
+            lr=cfg.OPTIM.BASE_LR,
+            momentum=cfg.OPTIM.MOMENTUM,
+            weight_decay=cfg.OPTIM.WEIGHT_DECAY,
+            dampening=cfg.OPTIM.DAMPENING,
+            nesterov=cfg.OPTIM.NESTEROV,
+        )
+    elif cfg.OPTIM.METHOD == 'adam':
+        return torch.optim.Adam(
+            optim_params,
+            lr=cfg.OPTIM.BASE_LR,
+            weight_decay=cfg.OPTIM.WEIGHT_DECAY,
+        )
 
 
 def lr_fun_steps(cur_epoch):

@@ -292,6 +292,9 @@ _C.TRAIN.WEIGHTS = ""
 # Feedback Strategy
 _C.TRAIN.FEEDBACK = "MinEntropy"
 
+# Load weights in strict way
+_C.TRAIN.LOAD_STRICT = True
+
 
 # ------------------------------------------------------------------------------------ #
 # Testing options

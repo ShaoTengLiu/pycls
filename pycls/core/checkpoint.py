@@ -70,7 +70,7 @@ def save_checkpoint(model, optimizer, epoch):
     return checkpoint_file
 
 
-def load_checkpoint(checkpoint_file, model, optimizer=None):
+def load_checkpoint(checkpoint_file, model, optimizer=None, strict=True):
     """Loads the checkpoint from the given file."""
     err_str = "Checkpoint '{}' not found"
     assert os.path.exists(checkpoint_file), err_str.format(checkpoint_file)
@@ -78,7 +78,7 @@ def load_checkpoint(checkpoint_file, model, optimizer=None):
     checkpoint = torch.load(checkpoint_file, map_location="cpu")
     # Account for the DDP wrapper in the multi-gpu setting
     ms = model.module if cfg.NUM_GPUS > 1 else model
-    ms.load_state_dict(checkpoint["model_state"])
+    ms.load_state_dict(checkpoint["model_state"], strict=strict)
     # Load the optimizer state (commonly not done when fine-tuning)
     if optimizer:
         optimizer.load_state_dict(checkpoint["optimizer_state"])

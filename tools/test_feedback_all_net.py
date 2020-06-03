@@ -25,18 +25,19 @@ def parse_args():
                                              'contrast', 'elastic_transform', 'pixelate', 
                                              'jpeg_compression'], nargs='+')
     parser.add_argument("--levels", default=[5,4,3,2,1], nargs='+', type=int)
+    parser.add_argument("--cfg") # just for the cfg conflict
     return parser.parse_args()
 
 def main():
-    args = parse_args()
 
     config.load_cfg_fom_args("Train a classification model.")
     config.assert_and_infer_cfg()
     cfg.freeze()
 
+    args = parse_args()
     # Perform training
-    function = lambda x: trainer.test_feedback_all_model(args.corruptions, args.levels)
-    results = dist.multi_proc_run(num_proc=cfg.NUM_GPUS, fun=function)
+    results = dist.multi_proc_run(num_proc=cfg.NUM_GPUS, \
+        fun=trainer.test_feedback_all_model(args.corruptions, args.levels))
 
     # plot the results table
     for index, level in enumerate(args.levels):

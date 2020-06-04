@@ -239,7 +239,7 @@ def test_ftta_model(corruptions, levels):
         logger.info("corruption level: {}".format(levels[lvl_idx]))
         logger.info("corruption types: {}".format(corruptions))
         logger.info(all_results[lvl_idx])
-        
+
     return all_results
 
 

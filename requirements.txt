@@ -9,5 +9,4 @@ simplejson
 yacs
 
 termcolor
-itertools
 rich

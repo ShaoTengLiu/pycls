@@ -29,7 +29,7 @@ TRAIN:
   BATCH_SIZE: 64
   EVAL_PERIOD: 1
   LOAD_STRICT: False
-  WEIGHTS: /home/dqwang/Work/CLS/R-50-1x64d_dds_8gpu.pyth
+  WEIGHTS: checkpoints/R-50-1x64d_dds_8gpu.pyth
   FEEDBACK: MinEntropy+PreciseBN
 TEST:
   DATASET: imagenet
@@ -38,7 +38,7 @@ TEST:
   LEVEL: 5
   IM_SIZE: 256
   BATCH_SIZE: 256
-  WEIGHTS: /home/dqwang/Work/CLS/R-50-1x64d_dds_8gpu.pyth
+  WEIGHTS: checkpoints/R-50-1x64d_dds_8gpu.pyth
 NUM_GPUS: 1
 DATA_LOADER:
   NUM_WORKERS: 4

@@ -125,24 +125,14 @@ class ImageNet(torch.utils.data.Dataset):
             re_pattern = r"^n[0-9]+$"
         else:
             assert self._split == 'val'
-            if self._corruption_type == 'matched-frequency':
-                split_path = self._data_path.replace('imagenet', 'imagenetv2-matched-frequency')
-                re_pattern = r"^[0-9]+$"
-            elif self._corruption_type == 'topimages':
-                split_path = self._data_path.replace('imagenet', 'imagenetv2-topimages')
-                re_pattern = r"^[0-9]+$"
-            elif self._corruption_type == 'threshold0.7':
-                split_path = self._data_path.replace('imagenet', 'imagenetv2-threshold0.7')
-                re_pattern = r"^[0-9]+$"
-            else:
-                assert self._corruption_level in [1, 2, 3, 4, 5]
-                assert self._corruption_type in [
-                            'gaussian_noise', 'shot_noise', 'impulse_noise', 
-                            'defocus_blur', 'glass_blur', 'motion_blur', 
-                            'zoom_blur', 'snow', 'frost', 'fog', 'brightness', 
-                            'contrast', 'elastic_transform', 'pixelate', 'jpeg_compression']
-                split_path = os.path.join(self._data_path.replace('imagenet', 'imagenet-c'), self._corruption_type, str(self._corruption_level))
-                re_pattern = r"^n[0-9]+$"
+            assert self._corruption_level in [1, 2, 3, 4, 5]
+            assert self._corruption_type in [
+                        'gaussian_noise', 'shot_noise', 'impulse_noise', 
+                        'defocus_blur', 'glass_blur', 'motion_blur', 
+                        'zoom_blur', 'snow', 'frost', 'fog', 'brightness', 
+                        'contrast', 'elastic_transform', 'pixelate', 'jpeg_compression']
+            split_path = os.path.join(self._data_path.replace('imagenet', 'imagenet_c'), self._corruption_type, str(self._corruption_level))
+            re_pattern = r"^n[0-9]+$"
 
         logger.info("{} data path: {}".format(self._split, split_path))
         # Images are stored per class in subdirs (format: n<number>)

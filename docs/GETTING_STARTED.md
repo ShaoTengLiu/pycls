@@ -9,7 +9,7 @@ This document provides basic instructions for training and evaluation using **py
 
 Training on CIFAR with 1 GPU: 
 
-```
+```bash
 python tools/train_net.py \
     --cfg configs/archive/cifar/resnet/R-56_nds_1gpu.yaml \
     OUT_DIR /tmp
@@ -17,7 +17,7 @@ python tools/train_net.py \
 
 Training on ImageNet with 1 GPU:
 
-```
+```bash
 python tools/train_net.py \
     --cfg configs/archive/imagenet/resnet/R-50-1x64d_step_1gpu.yaml \
     OUT_DIR /tmp
@@ -25,7 +25,7 @@ python tools/train_net.py \
 
 Training on ImageNet with 2 GPUs:
 
-```
+```bash
 python tools/train_net.py \
     --cfg configs/archive/imagenet/resnet/R-50-1x64d_step_2gpu.yaml \
     OUT_DIR /tmp
@@ -35,7 +35,7 @@ python tools/train_net.py \
 
 Finetuning on ImageNet with 1 GPU:
 
-```
+```bash
 python tools/train_net.py \
     --cfg configs/archive/imagenet/resnet/R-50-1x64d_step_1gpu.yaml \
     TRAIN.WEIGHTS /path/to/weights/file \
@@ -46,7 +46,7 @@ python tools/train_net.py \
 
 Evaluation on ImageNet with 1 GPU:
 
-```
+```bash
 python tools/test_net.py \
     --cfg configs/archive/imagenet/resnet/R-50-1x64d_step_1gpu.yaml \
     TEST.WEIGHTS /path/to/weights/file \

@@ -45,7 +45,7 @@ def construct_optimizer(model):
         else:
             optim_params = model.parameters()
     # only optimize the affine parameters after normalization
-    elif cfg.OPTIM.PARAMS == 'only_bn_with_affine':
+    elif cfg.OPTIM.PARAMS == 'bn_related':
         bn_params = []
 
         for name, p in model.named_parameters():

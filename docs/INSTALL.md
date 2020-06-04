@@ -22,21 +22,21 @@ To install PyTorch with CUDA support, follow the [installation instructions](htt
 
 Clone the **pycls** repository:
 
-```
+```bash
 # PYCLS=/path/to/clone/pycls
 git clone https://github.com/facebookresearch/pycls $PYCLS
 ```
 
 Install Python dependencies:
 
-```
+```bash
 pip install -r $PYCLS/requirements.txt
 ```
 
 Set up Python modules:
 
-```
-cd $PYCLS && python setup.py develop --user
+```bash
+cd $PYCLS && python3 setup.py build develop
 ```
 
 ## Datasets

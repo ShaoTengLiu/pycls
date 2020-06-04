@@ -256,7 +256,7 @@ _C.AUG = CfgNode()
 
 # Data Augmentation
 _C.AUG.IMG_FMT = 'RGB'
-_C.AUG.TYPE = 'default'
+_C.AUG.TYPE = 'test'
 
 # ------------------------------------------------------------------------------------ #
 # Training options
@@ -290,7 +290,7 @@ _C.TRAIN.AUTO_RESUME = True
 _C.TRAIN.WEIGHTS = ""
 
 # Feedback Strategy
-_C.TRAIN.FEEDBACK = "MinEntropy"
+_C.TRAIN.ADAPTATION = "min_entropy"
 
 # Load weights in strict way
 _C.TRAIN.LOAD_STRICT = True
@@ -447,7 +447,13 @@ def load_cfg_fom_args(description="Config file options."):
     """Load config from command line arguments and set any specified options."""
     parser = argparse.ArgumentParser(description=description)
     help_s = "Config file location"
-    parser.add_argument("--cfg", dest="cfg_file", help=help_s, required=True, type=str)
+    parser.add_argument("--corruptions", default=['original', 'gaussian_noise', 'shot_noise', 'impulse_noise', 
+                                             'defocus_blur', 'glass_blur', 'motion_blur', 
+                                             'zoom_blur', 'snow', 'frost', 'fog', 'brightness', 
+                                             'contrast', 'elastic_transform', 'pixelate', 
+                                             'jpeg_compression'], nargs='+')
+    parser.add_argument("--levels", default=[5,4,3,2,1], nargs='+', type=int)
+    parser.add_argument("--cfg", "--config", dest="cfg_file", help=help_s, required=True, type=str)
     help_s = "See pycls/core/config.py for all options"
     parser.add_argument("opts", help=help_s, default=None, nargs=argparse.REMAINDER)
     if len(sys.argv) == 1:
@@ -464,6 +470,8 @@ def load_cfg_fom_args(description="Config file options."):
     datetime_now = datetime.now().strftime("%m%d_%H%M%S")
     _C.LOG_DEST = 'log_'+datetime_now+'.txt'
     _C.CFG_DEST = 'cfg_'+datetime_now+'.yaml'
+
+    return args.corruptions, args.levels
 
     # uncommit to use multi-gpu
     # cfg.NUM_GPUS = torch.cuda.device_count()

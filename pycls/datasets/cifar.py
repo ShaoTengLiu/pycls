@@ -106,8 +106,7 @@ class Cifar100(torch.utils.data.Dataset):
             inputs = get_npy(self._split, 
                              self._corruption_type, 
                              self._corruption_level, 
-                             self._data_path.replace('cifar100', 'CIFAR-100-C'))
-
+                             self._data_path.replace('cifar100', 'cifar100_c'))
         # CORRUPTED DATA is already N x 32 x 32 x 3
         return inputs, labels
 
@@ -167,17 +166,10 @@ class Cifar10(torch.utils.data.Dataset):
         inputs = inputs.transpose((0, 2, 3, 1)) # CHW --> HWC
 
         if self._corruption_type != 'original':
-            if self._corruption_type == 'cifar10.1':
-                assert self._split == 'test'
-                dp = self._data_path.replace('cifar10', 'cifar10.1')
-                inputs = np.load(dp + '/cifar10images.npy')
-                labels = np.load(dp + '/cifar10labels.npy')
-            else:
-                inputs = get_npy(self._split, 
-                            self._corruption_type, 
-                            self._corruption_level, 
-                            self._data_path.replace('cifar10', 'CIFAR-10-C'))
-
+            inputs = get_npy(self._split, 
+                             self._corruption_type, 
+                             self._corruption_level, 
+                             self._data_path.replace('cifar10', 'cifar10_c'))
         # CORRUPTED DATA is already N x 32 x 32 x 3
 
         return inputs, labels

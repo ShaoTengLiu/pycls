@@ -14,7 +14,7 @@ from pycls.models.effnet import EffNet
 from pycls.models.regnet import RegNet
 from pycls.models.resnet import ResNet
 
-# Entropy as loss_fun (feedback)
+# entropy as loss_fun 
 import torch.jit
 @torch.jit.script
 def softmax_entropy(x: torch.Tensor) -> torch.Tensor:

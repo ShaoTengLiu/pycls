@@ -2,7 +2,6 @@ MODEL:
   TYPE: resnet
   DEPTH: 50
   NUM_CLASSES: 1000
-  LOSS_FUN: softmax_entropy
 RESNET:
   TRANS_FUN: bottleneck_transform
   NUM_GROUPS: 1
@@ -24,12 +23,12 @@ TRAIN:
   SPLIT: val
   CORRUPTION: gaussian_noise
   LEVEL: 5
-  IM_SIZE: 224
+  IM_SIZE: 256
   BATCH_SIZE: 256
   EVAL_PERIOD: 1
-  WEIGHTS: checkpoints/R-50-1x64d_dds_8gpu.pyth
   LOAD_STRICT: False
-  FEEDBACK: OnlyTest
+  WEIGHTS: checkpoints/R-50-1x64d_dds_8gpu.pyth
+  ADAPTATION: test_only
 TEST:
   DATASET: imagenet
   SPLIT: val

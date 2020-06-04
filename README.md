@@ -14,15 +14,14 @@ Train image classification ConvNet with a supervised loss on CIFAR100 with 1 GPU
 
 ```bash
 python tools/train_net.py \
-    --cfg configs/archive/cifar/resnet/R-56_nds_1gpu.yaml \
-    OUT_DIR /tmp
+    --cfg configs/cifar100/R-26_w4_1gpu_cifar100_bn.yaml
 ```
 
 Fully test-time adaptation via entropy minimization on CIFAR100 with 1 GPU: 
 
 ```bash
-python tools/test_feedback_net.py \
-    --cfg configs/archive/cifar10/R-26_w4_1gpu_adaptbn_entropy_precisebn.yaml
+python tools/test_net_ftta.py \
+    --cfg configs/cifar100/R-26_w4_1gpu_adaptbn_entropy.yaml
 ```
 
 ## Results

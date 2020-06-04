@@ -15,6 +15,11 @@ from pycls.core.config import cfg
 from rich.console import Console
 from rich.table import Column, Table
 
+corruptions_concise = {'original':'original', 'gaussian_noise':'gauss', 'shot_noise':'shot', 'impulse_noise':'impulse', 
+                                             'defocus_blur':'defocus', 'glass_blur':'glass', 'motion_blur':'motion', 
+                                             'zoom_blur':'zoom', 'snow':'snow', 'frost':'frost', 'fog':'fog', 'brightness':'bright', 
+                                             'contrast':'contrast', 'elastic_transform':'elastic', 'pixelate':'pixelate', 
+                                             'jpeg_compression':'jpeg'}
 
 def main():
 
@@ -32,7 +37,7 @@ def main():
         table = Table(show_header=True, header_style="cyan")
         table.add_column('level')
         for corruption in corruptions:
-            table.add_column(corruption)
+            table.add_column(corruptions_concise[corruption])
         res = list( map(lambda x: str(x), results[index]) )
         res = [str(level)] + res
         table.add_row(*res)

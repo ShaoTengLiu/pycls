@@ -258,8 +258,9 @@ def test_feedback_all_model(corruptions, levels):
                 benchmark.compute_time_full(model, loss_fun, train_loader, test_loader)
             # Perform the training loop
             logger.info("Start epoch: {}".format(start_epoch + 1))
-            for cur_epoch in track( range(start_epoch, cfg.OPTIM.MAX_EPOCH), \
-                description="Test-time adaptation for {} {}".format(corruption, str(level)) ):
+            # for cur_epoch in track( range(start_epoch, cfg.OPTIM.MAX_EPOCH), \
+            #     description="Test-time adaptation for {} {}".format(corruption_type, str(corruption_level)) ):
+            for cur_epoch in range(start_epoch, cfg.OPTIM.MAX_EPOCH):
                 if cfg.TRAIN.FEEDBACK != 'OnlyTest':
                     if cfg.TRAIN.FEEDBACK == 'PreciseBN':
                         precise_bn_update(model, train_loader)

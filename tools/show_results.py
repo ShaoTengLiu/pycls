@@ -12,7 +12,7 @@ table = Table(show_header=True, header_style="cyan")
 print("[bold green]CIFAR10[/bold green]")
 table.add_column('Model')
 for corruption in corruptions:
-    table.add_column(corruption[:3])
+    table.add_column(corruption)
 console.print(table)
 
 console = Console()

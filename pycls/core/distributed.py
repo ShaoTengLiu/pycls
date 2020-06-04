@@ -138,8 +138,8 @@ def multi_proc_run(num_proc, fun, fun_args=(), fun_kwargs=None):
     # There is no need for multi-proc in the single-proc case
     fun_kwargs = fun_kwargs if fun_kwargs else {}
     if num_proc == 1:
-        fun(*fun_args, **fun_kwargs)
-        return
+        res = fun(*fun_args, **fun_kwargs)
+        return res
     # Handle errors from training subprocesses
     error_queue = multiprocessing.SimpleQueue()
     error_handler = ErrorHandler(error_queue)

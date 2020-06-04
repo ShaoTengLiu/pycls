@@ -36,18 +36,19 @@ def main():
 
     args = parse_args()
     # Perform training
-    results = dist.multi_proc_run(num_proc=cfg.NUM_GPUS, \
-        fun=trainer.test_feedback_all_model(args.corruptions, args.levels))
+    function = lambda: trainer.test_feedback_all_model(args.corruptions, args.levels)
+    results = dist.multi_proc_run(num_proc=cfg.NUM_GPUS, fun=function)
 
     # plot the results table
     for index, level in enumerate(args.levels):
         console = Console()
         table = Table(show_header=True, header_style="cyan")
-        print("[bold green]{}[/bold green]".format(str(level)))
-        table.add_column('Model')
+        table.add_column('level')
         for corruption in args.corruptions:
-            table.add_column(corruption[:3])
-        table.add_row(results[index])
+            table.add_column(corruption)
+        res = list( map(lambda x: str(x), results[index]) )
+        res = [str(level)] + res
+        table.add_row(*res)
         console.print(table)
 
 if __name__ == "__main__":

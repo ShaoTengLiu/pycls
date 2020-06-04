@@ -234,6 +234,12 @@ def test_ftta_model(corruptions, levels):
                     top1 = test_epoch(test_loader, model, test_meter, cur_epoch)
             lvl_results.append(top1)
         all_results.append(lvl_results)
+    
+    for lvl_idx in range(len(all_results)):
+        logger.info("corruption level: {}".format(levels[lvl_idx]))
+        logger.info("corruption types: {}".format(corruptions))
+        logger.info(all_results[lvl_idx])
+        
     return all_results
 
 

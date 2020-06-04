@@ -1,5 +1,4 @@
 # Byte-compiled / optimized / DLL files
-checkpoints/*
 __pycache__/
 *.py[cod]
 *$py.class
@@ -29,3 +28,5 @@ pycls/datasets/data/
 # Other
 logs/
 scratch*
+output/
+*.pyth

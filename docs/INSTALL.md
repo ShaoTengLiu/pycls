@@ -33,12 +33,6 @@ Install Python dependencies:
 pip install -r $PYCLS/requirements.txt
 ```
 
-Set up Python modules:
-
-```bash
-cd $PYCLS && python3 setup.py build develop
-```
-
 ## Datasets
 
 **pycls** finds datasets via symlinks from `pycls/datasets/data` to the actual locations where the dataset images and annotations are stored. For instructions on how to create symlinks for CIFAR and ImageNet, please see [`DATA.md`](DATA.md).

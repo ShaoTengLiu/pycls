@@ -25,7 +25,7 @@ TRAIN:
   SPLIT: val
   CORRUPTION: gaussian_noise
   LEVEL: 5
-  IM_SIZE: 256
+  IM_SIZE: 224
   BATCH_SIZE: 64
   EVAL_PERIOD: 1
   LOAD_STRICT: False

@@ -165,7 +165,7 @@ class AdaptBatchNorm2d(nn.Module):
     __constants__ = ['track_running_stats', 'momentum', 'eps',
                      'num_features', 'affine']
 
-    def __init__(self, num_features, eps=1e-5, momentum=0.1):
+    def __init__(self, gamma_beta, num_features, eps=1e-5, momentum=0.1):
         super(AdaptBatchNorm2d, self).__init__()
         self.num_features = num_features
         self.momentum = momentum
@@ -173,8 +173,12 @@ class AdaptBatchNorm2d(nn.Module):
         self.affine = True
         self.track_running_stats = True
 
-        self.register_parameter("gamma", nn.Parameter(torch.zeros(num_features)))
-        self.register_parameter("beta", nn.Parameter(torch.zeros(num_features)))
+        if gamma_beta == 'ChannelDependent':
+            self.register_parameter("gamma", nn.Parameter(torch.zeros(num_features)))
+            self.register_parameter("beta", nn.Parameter(torch.zeros(num_features)))
+        elif gamma_beta == 'ChannelAgnostic':
+            self.register_parameter("gamma", nn.Parameter(torch.zeros(1)))
+            self.register_parameter("beta", nn.Parameter(torch.zeros(1)))
         self.register_parameter("weight", nn.Parameter(torch.ones(num_features)))
         self.register_parameter("bias", nn.Parameter(torch.zeros(num_features)))
         self.register_buffer("running_mean", torch.zeros(num_features))
@@ -248,7 +252,8 @@ def get_norm(norm, out_channels):
             return None
         norm = {
             "BN": BatchNorm2d,
-            "AdaptBN": AdaptBatchNorm2d,
+            "AdaptBN": lambda num_features: AdaptBatchNorm2d('ChannelDependent', num_features),
+            "CAABN": lambda num_features: AdaptBatchNorm2d('ChannelAgnostic', num_features),
             "FrozenBN": FrozenBatchNorm2d,
         }[norm]
     return norm(out_channels)

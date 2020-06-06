@@ -26,6 +26,8 @@ from pycls.core.config import cfg
 from pycls.utils import bn_update
 from rich.progress import track
 
+from pycls.utils.visualization import show_parameters
+
 logger = logging.get_logger(__name__)
 
 
@@ -239,6 +241,9 @@ def test_ftta_model(corruptions, levels):
         logger.info("corruption level: {}".format(levels[lvl_idx]))
         logger.info("corruption types: {}".format(corruptions))
         logger.info(all_results[lvl_idx])
+
+    # TODO visual bn_para
+    show_parameters(model)
 
     return all_results
 

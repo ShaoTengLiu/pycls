@@ -242,8 +242,7 @@ def test_ftta_model(corruptions, levels):
         logger.info("corruption types: {}".format(corruptions))
         logger.info(all_results[lvl_idx])
 
-    # TODO visual bn_para
-    show_parameters(model)
+    # show_parameters(model)
 
     return all_results
 

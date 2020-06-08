@@ -15,7 +15,7 @@ OPTIM:
   MOMENTUM: 0.9
   NESTEROV: True
   WEIGHT_DECAY: 0.0001
-  PARAMS: bn_related
+  PARAMS: default
 TRAIN:
   DATASET: cifar100
   SPLIT: test

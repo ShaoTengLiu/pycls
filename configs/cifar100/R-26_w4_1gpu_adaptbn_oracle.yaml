@@ -3,7 +3,7 @@ MODEL:
   DEPTH: 26
   WIDTH: 4
   NUM_CLASSES: 100
-  LOSS_FUN: softmax_entropy
+  LOSS_FUN: cross_entropy
 RESNET:
   NORM_FUNC: AdaptBN
   TRANS_FUN: basic_transform

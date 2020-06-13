@@ -82,6 +82,24 @@ def construct_optimizer(model):
         optim_params = [
             {"params": bn_params, "weight_decay": bn_weight_decay},
         ]
+    # only optimize spade for FG1
+    elif cfg.OPTIM.PARAMS == 'spade_related':
+        spade_params = []
+
+        for name, p in model.named_parameters():
+            if "spade" in name:
+                spade_params.append(p)
+            else:
+                p.requires_grad = False
+
+        bn_weight_decay = (
+            cfg.BN.CUSTOM_WEIGHT_DECAY
+            if cfg.BN.USE_CUSTOM_WEIGHT_DECAY
+            else cfg.OPTIM.WEIGHT_DECAY
+        )
+        optim_params = [
+            {"params": spade_params, "weight_decay": bn_weight_decay},
+        ]
     
     if cfg.OPTIM.METHOD == 'sgd':
         return torch.optim.SGD(

@@ -66,6 +66,8 @@ _C.RESNET.WIDTH_PER_GROUP = 64
 # Apply stride to 1x1 conv (True -> MSRA; False -> fb.torch)
 _C.RESNET.STRIDE_1X1 = True
 
+# The version of spade-based method
+_C.RESNET.SPADE_VER = 'v1'
 
 # ------------------------------------------------------------------------------------ #
 # AnyNet options

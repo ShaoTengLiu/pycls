@@ -14,6 +14,7 @@ from pycls.models.effnet import EffNet
 from pycls.models.regnet import RegNet
 from pycls.models.resnet import ResNet
 from pycls.models.resnetFG1 import ResNetFG1
+from pycls.models.san import SAN
 
 # entropy as loss_fun 
 import torch.jit
@@ -29,7 +30,7 @@ class SoftmaxEntropy(torch.nn.Module):
         return softmax_entropy(x).mean(0) * self.loss_weight
 
 # Supported models
-_models = {"anynet": AnyNet, "effnet": EffNet, "resnet": ResNet, "regnet": RegNet, "resnetFG1": ResNetFG1}
+_models = {"anynet": AnyNet, "effnet": EffNet, "resnet": ResNet, "regnet": RegNet, "resnetFG1": ResNetFG1, "san":SAN}
 
 # Supported loss functions
 _loss_funs = {"cross_entropy": torch.nn.CrossEntropyLoss, "softmax_entropy": SoftmaxEntropy}

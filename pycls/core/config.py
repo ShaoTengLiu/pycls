@@ -70,6 +70,19 @@ _C.RESNET.STRIDE_1X1 = True
 _C.RESNET.SPADE_VER = 'v1'
 
 # ------------------------------------------------------------------------------------ #
+# SAN options
+# ------------------------------------------------------------------------------------ #
+_C.SAN = CfgNode()
+
+# The normalization
+_C.SAN.NORM_FUNC = 'BN'
+
+# SAN parameters
+_C.SAN.SA_TYPE = 0
+_C.SAN.LAYERS = [2, 1, 2, 4, 1]
+_C.SAN.KERNELS = [3, 7, 7, 7, 7]
+
+# ------------------------------------------------------------------------------------ #
 # AnyNet options
 # ------------------------------------------------------------------------------------ #
 _C.ANYNET = CfgNode()
@@ -462,7 +475,7 @@ def load_cfg_fom_args(description="Config file options."):
         parser.print_help()
         sys.exit(1)
     args = parser.parse_args()
-    
+
     _C.merge_from_file(args.cfg_file)
     _C.merge_from_list(args.opts)
 
